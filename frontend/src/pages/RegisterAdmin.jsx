@@ -17,13 +17,36 @@ const RegisterAdmin = () => {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '50px auto' }}>
+        <div className="max-w-md mx-auto mt-12 p-6 glass-card">
             <h2>Register Administrator</h2>
-            <form onSubmit={handleRegister}>
-                <input type="text" placeholder="Full Name" required value={name} onChange={e => setName(e.target.value)} /><br/><br/>
-                <input type="email" placeholder="Admin Email" required value={email} onChange={e => setEmail(e.target.value)} /><br/><br/>
-                <input type="password" placeholder="Password" required value={password} onChange={e => setPassword(e.target.value)} /><br/><br/>
-                <button type="submit">Create Admin Account</button>
+            <form onSubmit={handleRegister} className="space-y-4">
+                <input 
+                    type="text" 
+                    placeholder="Full Name" 
+                    required 
+                    value={name} 
+                    onChange={e => setName(e.target.value)} 
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+                <input 
+                    type="email" 
+                    placeholder="Admin Email" 
+                    required 
+                    value={email} 
+                    onChange={e => setEmail(e.target.value)} 
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+                <input 
+                    type="password" 
+                    placeholder="Password" 
+                    required 
+                    value={password} 
+                    onChange={e => setPassword(e.target.value)} 
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+                <button type="submit" className="w-full btn-primary py-3 rounded-lg font-semibold">
+                    Create Admin Account
+                </button>
             </form>
         </div>
     );

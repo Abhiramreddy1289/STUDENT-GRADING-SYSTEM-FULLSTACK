@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import AddStudent from './pages/AddStudent';
 import ManageGrades from './pages/ManageGrades';
@@ -10,39 +10,9 @@ import RegisterAdmin from './pages/RegisterAdmin';
 import CompleteRegistration from './pages/CompleteRegistration';
 import PublicStudentView from './pages/PublicStudentView';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { NotificationProvider } from './components';
+import Header from './components/Header';
 import './App.css';
-
-const Navigation = () => {
-  const { user, logout } = useAuth();
-  
-  return (
-    <nav>
-      <div style={{display:'flex', alignItems:'center', gap:'1rem'}}>
-        <h1>Grading System</h1>
-        {user && (
-          <span style={{fontSize:'0.9rem', background:'#34495e', padding:'4px 8px', borderRadius:'4px'}}>
-            {user.name} ({user.role})
-          </span>
-        )}
-      </div>
-      <ul>
-        {!user && <li><Link to="/check-marks">Check Marks</Link></li>}
-        {!user && <li><Link to="/login">Login</Link></li>}
-        
-        {user && user.role === 'TEACHER' && (
-          <>
-            <li><Link to="/">Dashboard</Link></li>
-            <li><Link to="/manage-marks">Manage Marks</Link></li>
-            <li><Link to="/add-student">Register Student</Link></li>
-          </>
-        )}
-        {user && user.role === 'STUDENT' && <li><Link to="/my-grades">Report Discrepancy</Link></li>}
-        {user && user.role === 'ADMIN' && <li><Link to="/admin">Analytics & Admin</Link></li>}
-        {user && <li><button onClick={logout} style={{padding:'4px 8px', background:'#e74c3c', marginLeft:'10px'}}>Logout</button></li>}
-      </ul>
-    </nav>
-  );
-};
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
@@ -52,14 +22,13 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 };
 
 function AppContent() {
-  const { user } = useAuth();
   return (
     <Router>
-      <Navigation />
-      <div className="container">
+      <Header />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Routes>
           <Route path="/check-marks" element={<PublicStudentView />} />
-          <Route path="/login" element={!user ? <Login /> : <Navigate to={user.role === 'STUDENT' ? '/my-grades' : user.role === 'ADMIN' ? '/admin' : '/'} />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register-admin" element={<RegisterAdmin />} />
           <Route path="/complete-registration" element={<CompleteRegistration />} />
           
@@ -72,7 +41,7 @@ function AppContent() {
           
           <Route path="*" element={<Navigate to="/check-marks" />} />
         </Routes>
-      </div>
+      </main>
     </Router>
   );
 }
@@ -80,7 +49,9 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <NotificationProvider>
+        <AppContent />
+      </NotificationProvider>
     </AuthProvider>
   );
 }

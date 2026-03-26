@@ -15,19 +15,40 @@ public class AuthService {
     @Autowired private TeacherRepository teacherRepository;
 
     public void preRegister(String email, String name, String role, String rollNo) {
+        String trimmedEmail = email != null ? email.trim() : "";
+        String trimmedName = name != null ? name.trim() : "";
+        String trimmedRollNo = rollNo != null ? rollNo.trim().toUpperCase() : "";
+
         if (role.equals("STUDENT")) {
+            if (studentRepository.existsById(trimmedRollNo)) {
+                throw new RuntimeException("Roll Number " + trimmedRollNo + " is already registered.");
+            }
+            if (studentRepository.findByEmail(trimmedEmail).isPresent()) {
+                throw new RuntimeException("Email " + trimmedEmail + " is already registered to a student.");
+            }
             Student s = new Student();
-            s.setId(rollNo); s.setName(name); s.setEmail(email); s.setActive(false);
-            studentRepository.save(s);
+            s.setId(trimmedRollNo); s.setName(trimmedName); s.setEmail(trimmedEmail); s.setActive(false);
+            try {
+                studentRepository.save(s);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to save student: " + e.getMessage());
+            }
         } else {
+            if (teacherRepository.existsById(trimmedEmail)) {
+                throw new RuntimeException("Teacher email " + trimmedEmail + " is already registered.");
+            }
             Teacher t = new Teacher();
-            t.setEmail(email); t.setName(name); t.setActive(false);
-            teacherRepository.save(t);
+            t.setEmail(trimmedEmail); t.setName(trimmedName); t.setActive(false);
+            try {
+                teacherRepository.save(t);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to save teacher: " + e.getMessage());
+            }
         }
     }
 
     public void activateAccount(String email, String password) {
-        Optional<Student> s = studentRepository.findAll().stream().filter(st -> st.getEmail().equals(email)).findFirst();
+        Optional<Student> s = studentRepository.findByEmail(email);
         if (s.isPresent()) {
             Student student = s.get();
             student.setPassword(password); student.setActive(true);
@@ -45,8 +66,8 @@ public class AuthService {
     }
 
     public Object login(String email, String password) {
-        Optional<Student> s = studentRepository.findAll().stream().filter(st -> st.getEmail().equals(email) && st.getPassword().equals(password)).findFirst();
-        if (s.isPresent()) return s.get();
+        Optional<Student> s = studentRepository.findByEmail(email);
+        if (s.isPresent() && s.get().getPassword().equals(password)) return s.get();
         
         Optional<Teacher> t = teacherRepository.findByEmail(email);
         if (t.isPresent() && t.get().getPassword().equals(password)) return t.get();

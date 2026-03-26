@@ -28,14 +28,35 @@ const CompleteRegistration = () => {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '50px auto' }} className="glass-card">
+        <div className="max-w-md mx-auto mt-12 glass-card">
             <h2>Complete Registration</h2>
-            <p>Activate your account using the email registered by the Admin.</p>
-            <form onSubmit={handleActivate} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <input type="email" placeholder="Email Address" required value={email} onChange={e => setEmail(e.target.value)} />
-                <input type="password" placeholder="New Password" required value={password} onChange={e => setPassword(e.target.value)} />
-                <input type="password" placeholder="Re-enter Password" required value={confirm} onChange={e => setConfirm(e.target.value)} />
-                <button type="submit" disabled={loading} className="btn-primary">
+            <p className="mb-6 text-gray-600">Activate your account using the email registered by the Admin.</p>
+            <form onSubmit={handleActivate} className="space-y-4">
+                <input 
+                    type="email" 
+                    placeholder="Email Address" 
+                    required 
+                    value={email} 
+                    onChange={e => setEmail(e.target.value)} 
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+                <input 
+                    type="password" 
+                    placeholder="New Password" 
+                    required 
+                    value={password} 
+                    onChange={e => setPassword(e.target.value)} 
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+                <input 
+                    type="password" 
+                    placeholder="Re-enter Password" 
+                    required 
+                    value={confirm} 
+                    onChange={e => setConfirm(e.target.value)} 
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+                <button type="submit" disabled={loading} className="w-full btn-primary py-3 rounded-lg font-semibold disabled:opacity-50">
                     {loading ? 'Activating...' : 'Activate Account'}
                 </button>
             </form>
